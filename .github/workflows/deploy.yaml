@@ -4,37 +4,30 @@ on:
   pull_request:
   push:
     branches:
-    - master
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x, 15.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js 12.20.0
-      uses: actions/setup-node@v1
-      with:
-        node-version: 12.20.0
-    - uses: actions/checkout@master
-    - name: Use Node.js
-        uses: actions/setup-node@master
+      - uses: actions/checkout@v2
+      - name: Use Node.js 12.20.0
+        uses: actions/setup-node@v1
         with:
           node-version: 12.20.0
-    - run: npm ci
-    - run: npm run export
-    - uses: jakejarvis/s3-sync-action@master
-      with:
-        args: --acl public-read --follow-symlinks --delete
-      env:
-        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: 'us-west-1'  
-        SOURCE_DIR: 'out'      
-
-          
+      - run: npm ci
+      - run: npm run export
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "us-west-1"
+          SOURCE_DIR: "out"
